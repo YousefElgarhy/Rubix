@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Rubik's Cube</title>
+
+    <!-- Google Fonts Import -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- CSS (Keep ALL styles exactly as in the previous working version) --- */
+        :root { /* ... */ --bg-color-light: #f0f0f0; --text-color-light: #333; --panel-bg-color-light: #ffffff; --header-bg-color-light: #4a90e2; --header-text-color-light: #ffffff; --button-bg-color-light: #ffffff; --button-text-color-light: #4a90e2; --button-border-color-light: #4a90e2; --button-hover-bg-color-light: #e0e0e0; --button-active-bg-color-light: #d0d0d0; --cube-bg-color-light: #e0e0e0; --modal-bg-color-light: #ffffff; --modal-header-color-light: #d9534f; --modal-button-cancel-bg-light: #f0f0f0; --modal-button-cancel-border-light: #ccc; --modal-button-confirm-bg-light: #d9534f; --modal-button-confirm-text-light: #ffffff; --settings-panel-bg-light: #f8f8f8; --settings-separator-color-light: #ddd; --slider-thumb-bg-light: #4a90e2; --slider-track-bg-light: #ccc; --stop-button-bg-light: #ff4d4d; --stop-button-text-light: #ffffff; --stop-button-border-light: #e60000; --stop-button-hover-bg-light: #ff6666; --bg-color-dark: #2c2c2c; --text-color-dark: #f1f1f1; --panel-bg-color-dark: #3a3a3a; --header-bg-color-dark: #336aaa; --header-text-color-dark: #f1f1f1; --button-bg-color-dark: #4a4a4a; --button-text-color-dark: #a0c8f0; --button-border-color-dark: #5a8bcd; --button-hover-bg-color-dark: #5a5a5a; --button-active-bg-color-dark: #6a6a6a; --cube-bg-color-dark: #404040; --modal-bg-color-dark: #3a3a3a; --modal-header-color-dark: #e76f6b; --modal-button-cancel-bg-dark: #5a5a5a; --modal-button-cancel-border-dark: #777; --modal-button-confirm-bg-dark: #e76f6b; --modal-button-confirm-text-dark: #ffffff; --settings-panel-bg-dark: #333333; --settings-separator-color-dark: #555; --slider-thumb-bg-dark: #5a8bcd; --slider-track-bg-dark: #555; --stop-button-bg-dark: #e63939; --stop-button-text-dark: #ffffff; --stop-button-border-dark: #b30000; --stop-button-hover-bg-dark: #ff4d4d; --toggle-bg-on: #4a90e2; --toggle-bg-off: #ccc;}
+        body.dark-theme { --toggle-bg-on: #5a8bcd; --toggle-bg-off: #555;}
+        body { /* ... */ margin: 0; font-family: 'Roboto', sans-serif; background-color: var(--bg-color); color: var(--text-color); display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow: hidden; transition: background-color 0.3s ease, color 0.3s ease; }
+        body { /* Light */ --bg-color: var(--bg-color-light); --text-color: var(--text-color-light); --panel-bg-color: var(--panel-bg-color-light); --header-bg-color: var(--header-bg-color-light); --header-text-color: var(--header-text-color-light); --button-bg-color: var(--button-bg-color-light); --button-text-color: var(--button-text-color-light); --button-border-color: var(--button-border-color-light); --button-hover-bg-color: var(--button-hover-bg-color-light); --button-active-bg-color: var(--button-active-bg-color-light); --cube-bg-color: var(--cube-bg-color-light); --modal-bg-color: var(--modal-bg-color-light); --modal-header-color: var(--modal-header-color-light); --modal-button-cancel-bg: var(--modal-button-cancel-bg-light); --modal-button-cancel-border: var(--modal-button-cancel-border-light); --modal-button-confirm-bg: var(--modal-button-confirm-bg-light); --modal-button-confirm-text: var(--modal-button-confirm-text-light); --settings-panel-bg: var(--settings-panel-bg-light); --settings-separator-color: var(--settings-separator-color-light); --slider-thumb-bg: var(--slider-thumb-bg-light); --slider-track-bg: var(--slider-track-bg-light); --stop-button-bg: var(--stop-button-bg-light); --stop-button-text: var(--stop-button-text-light); --stop-button-border: var(--stop-button-border-light); --stop-button-hover-bg: var(--stop-button-hover-bg-light); }
+        body.dark-theme { /* Dark */ --bg-color: var(--bg-color-dark); --text-color: var(--text-color-dark); --panel-bg-color: var(--panel-bg-color-dark); --header-bg-color: var(--header-bg-color-dark); --header-text-color: var(--header-text-color-dark); --button-bg-color: var(--button-bg-color-dark); --button-text-color: var(--button-text-color-dark); --button-border-color: var(--button-border-color-dark); --button-hover-bg-color: var(--button-hover-bg-color-dark); --button-active-bg-color: var(--button-active-bg-color-dark); --cube-bg-color: var(--cube-bg-color-dark); --modal-bg-color: var(--modal-bg-color-dark); --modal-header-color: var(--modal-header-color-dark); --modal-button-cancel-bg: var(--modal-button-cancel-bg-dark); --modal-button-cancel-border: var(--modal-button-cancel-border-dark); --modal-button-confirm-bg: var(--modal-button-confirm-bg-dark); --modal-button-confirm-text: var(--modal-button-confirm-text-dark); --settings-panel-bg: var(--settings-panel-bg-dark); --settings-separator-color: var(--settings-separator-color-dark); --slider-thumb-bg: var(--slider-thumb-bg-dark); --slider-track-bg: var(--slider-track-bg-dark); --stop-button-bg: var(--stop-button-bg-dark); --stop-button-text: var(--stop-button-text-dark); --stop-button-border: var(--stop-button-border-dark); --stop-button-hover-bg: var(--stop-button-hover-bg-dark); }
+        #header { /* ... */ width: 100%; padding: 10px 0; background-color: var(--header-bg-color); color: var(--header-text-color); text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 15px; display: flex; justify-content: center; align-items: center; transition: background-color 0.3s ease; }
+        #controls { /* ... */ display: flex; gap: 15px; align-items: center; padding: 0 15px; }
+        #controls button { /* ... */ padding: 7px 12px; font-size: 14px; cursor: pointer; background-color: var(--button-bg-color); color: var(--button-text-color); border: 1px solid var(--button-border-color); border-radius: 5px; transition: background-color 0.2s, color 0.2s, border-color 0.2s, opacity 0.2s, transform 0.1s ease-out; }
+        #controls button:hover { /* ... */ transform: translateY(-1px); background-color: var(--button-hover-bg-color); }
+        #controls button:active { /* ... */ transform: translateY(0px); background-color: var(--button-active-bg-color); }
+        #controls button:disabled { /* ... */ opacity: 0.5; cursor: not-allowed; background-color: var(--button-hover-bg-color); transform: none; }
+        #stop-button { background-color: var(--stop-button-bg); color: var(--stop-button-text); border-color: var(--stop-button-border); }
+        #stop-button:hover { background-color: var(--stop-button-hover-bg); }
+        #logo-area { display: flex; align-items: center; margin: 0 5px; }
+        .logo-text { font-family: 'Montserrat', 'Roboto', sans-serif; font-weight: 700; font-size: 1.1rem; color: var(--header-text-color); letter-spacing: 0.5px; }
+        #cube-container { width: 80vw; max-width: 600px; height: 60vh; max-height: 500px; background-color: var(--cube-bg-color); border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); margin-bottom: 15px; position: relative; touch-action: none; transition: background-color 0.3s ease; }
+        #description { /* ... */ max-width: 600px; width: 80vw; padding: 15px; background-color: var(--panel-bg-color); border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); text-align: center; font-size: 14px; line-height: 1.5; transition: background-color 0.3s ease, color 0.3s ease; }
+        #description strong { color: var(--button-text-color); }
+        .modal-overlay { /* ... */ display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); justify-content: center; align-items: center; z-index: 1000; opacity: 0; transition: opacity 0.2s ease-in-out; }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-content { /* ... */ background-color: var(--modal-bg-color); color: var(--text-color); padding: 25px 35px; border-radius: 8px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.25); transform: scale(0.95); opacity: 0; transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease-out, opacity 0.2s ease-out; }
+        .modal-overlay.active .modal-content { transform: scale(1); opacity: 1; }
+        .modal-content h3 { /* ... */ margin-top: 0; margin-bottom: 15px; color: var(--modal-header-color); font-weight: 600; }
+        .modal-buttons { /* ... */ margin-top: 20px; }
+        .modal-buttons button { /* ... */ padding: 9px 22px; margin: 0 10px; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 500; transition: background-color 0.2s, transform 0.1s ease-out; }
+        .modal-buttons button:hover { transform: translateY(-1px); }
+        .modal-buttons button:active { transform: translateY(0px); }
+        #modal-cancel { /* ... */ background-color: var(--modal-button-cancel-bg); color: var(--text-color); border: 1px solid var(--modal-button-cancel-border); }
+        #modal-confirm { /* ... */ background-color: var(--modal-button-confirm-bg); color: var(--modal-button-confirm-text); border: none; }
+        #settings-panel { display: flex; flex-direction: column; position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background-color: var(--settings-panel-bg); box-shadow: -3px 0 15px rgba(0, 0, 0, 0.2); z-index: 1001; padding: 20px; padding-top: 50px; box-sizing: border-box; transition: transform 0.3s ease-out, background-color 0.3s ease; color: var(--text-color); }
+        #settings-panel.active { transform: translateX(-300px); }
+        #settings-panel h2 { /* ... */ margin-top: 0; margin-bottom: 25px; text-align: center; font-size: 1.2rem; color: var(--text-color); }
+        .settings-section { /* ... */ margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid var(--settings-separator-color); transition: border-color 0.3s ease; }
+        .settings-section label { /* ... */ display: block; margin-bottom: 10px; font-weight: 500; font-size: 0.95rem; }
+        #close-settings-button { /* ... */ position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 1.8rem; line-height: 1; color: var(--text-color); cursor: pointer; padding: 5px; opacity: 0.7; transition: opacity 0.2s, transform 0.2s; }
+        #close-settings-button:hover { opacity: 1; transform: rotate(90deg); }
+        #animation-speed-slider { /* ... */ width: 100%; cursor: pointer; accent-color: var(--slider-thumb-bg); }
+        #animation-speed-slider::-webkit-slider-thumb { background: var(--slider-thumb-bg); } #animation-speed-slider::-moz-range-thumb { background: var(--slider-thumb-bg); border: none; border-radius: 50%; } #animation-speed-slider::-webkit-slider-runnable-track { background: var(--slider-track-bg); height: 6px; border-radius: 3px; } #animation-speed-slider::-moz-range-track { background: var(--slider-track-bg); height: 6px; border-radius: 3px; }
+        #speed-value-display { /* ... */ display: inline-block; margin-left: 10px; font-size: 0.9rem; opacity: 0.8; }
+        .theme-options label { /* ... */ display: inline-block; margin-right: 15px; cursor: pointer; font-weight: normal; }
+        .theme-options input[type="radio"] { /* ... */ margin-right: 5px; cursor: pointer; accent-color: var(--button-text-color); }
+        .toggle-switch { display: flex; align-items: center; justify-content: space-between; }
+        .toggle-switch label { margin-bottom: 0; }
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--toggle-bg-off); transition: .3s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--toggle-bg-on); }
+        input:checked + .slider:before { transform: translateX(20px); }
+        .settings-footer { margin-top: auto; padding-top: 20px; text-align: center; font-size: 0.8rem; color: var(--text-color); opacity: 0.7; }
+
+    </style>
+</head>
+<body>
+    <!-- HTML Structure (Unchanged) -->
+    <div id="header"> <div id="controls"> <button id="solve-button" title="Solve Cube">💡 Solve</button> <button id="shuffle-button" title="Shuffle Cube">🔀 Shuffle</button> <button id="stop-button" title="Stop Scramble" style="display: none;">⏹️ Stop</button> <div id="logo-area"> <span class="logo-text">Rubix</span> </div> <button id="settings-button" title="Settings">⚙️ Settings</button> </div> </div>
+    <div id="cube-container"></div>
+    <div id="description"> <p>‎ </strong>Rubix Cube is A Interactive Rubik's Cube Made With Yousef Elgarhy</strong></p> </div>
+    <div id="solve-confirm-modal" class="modal-overlay"> <div class="modal-content"> <h3>ARE YOU SURE?</h3> <p>This will reset the cube to the solved state after an animation.</p> <div class="modal-buttons"> <button id="modal-cancel">Cancel</button> <button id="modal-confirm">Go!</button> </div> </div> </div>
+    <div id="settings-panel"> <button id="close-settings-button" title="Close Settings">&times;</button> <h2>Settings</h2> <div class="settings-section"> <label for="animation-speed-slider">Animation Speed: <span id="speed-value-display">200ms</span></label> <input type="range" id="animation-speed-slider" min="50" max="1000" step="10" value="200"> </div> <div class="settings-section"> <label>Theme</label> <div class="theme-options"> <label> <input type="radio" name="theme" value="light" checked> Light </label> <label> <input type="radio" name="theme" value="dark"> Dark </label> </div> </div> <div class="settings-section toggle-switch"> <label for="vibration-toggle">Vibration Feedback</label> <label class="switch"> <input type="checkbox" id="vibration-toggle"> <span class="slider"></span> </label> </div> <p class="settings-footer">Made with Love ❤️ By Yousef Elgarhy</p> </div>
+
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <script>
+        // --- Config, Colors, Globals, DOM Elements, Settings Var (Unchanged) ---
+        const CUBE_SIZE = 1; const SPACING = 0.05; const N = 3; const SHUFFLE_MOVES = 30;
+        const VIBRATION_DURATION = 35;
+        const COLORS = { white: 0xffffff, yellow: 0xffff00, blue: 0x0000ff, green: 0x00ff00, red: 0xff0000, orange: 0xffa500, black: 0x1a1a1a };
+        let scene, camera, renderer, controls; let cubeGroup; let cubies = []; let raycaster, mouse; let intersectedObject = null, startPoint = null, dragNormal = null; let isDragging = false, isAnimating = false, isSequenceAnimating = false; let stopSequenceRequested = false;
+        const solveButton = document.getElementById('solve-button'); const shuffleButton = document.getElementById('shuffle-button'); const stopButton = document.getElementById('stop-button'); const settingsButton = document.getElementById('settings-button'); const settingsPanel = document.getElementById('settings-panel'); const closeSettingsButton = document.getElementById('close-settings-button'); const speedSlider = document.getElementById('animation-speed-slider'); const speedDisplay = document.getElementById('speed-value-display'); const themeRadios = document.querySelectorAll('input[name="theme"]'); const solveModal = document.getElementById('solve-confirm-modal'); const modalCancelButton = document.getElementById('modal-cancel'); const modalConfirmButton = document.getElementById('modal-confirm'); const cubeContainer = document.getElementById('cube-container');
+        const vibrationToggle = document.getElementById('vibration-toggle');
+        let MOVE_DURATION = 200;
+        let vibrationEnabled = true;
+
+        // --- Init ---
+        function init() {
+            loadSettings();
+            const container = document.getElementById('cube-container');
+            scene = new THREE.Scene();
+            const aspect = container.clientWidth / container.clientHeight;
+            camera = new THREE.PerspectiveCamera(50, aspect, 0.1, 1000);
+            camera.position.set(5, 5, 7);
+            camera.lookAt(0, 0, 0);
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setClearColor(0x000000, 0);
+            container.appendChild(renderer.domElement);
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7); scene.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5); directionalLight.position.set(5, 10, 7.5); scene.add(directionalLight);
+
+            // Setup OrbitControls and remove vertical angle limits
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.1;
+            controls.screenSpacePanning = false;
+            controls.minDistance = 5;
+            controls.maxDistance = 20;
+            controls.minPolarAngle = 0; // Allow looking from top
+            controls.maxPolarAngle = Math.PI; // Allow looking from bottom
+
+            raycaster = new THREE.Raycaster(); mouse = new THREE.Vector2();
+            createCube();
+            // Listeners (unchanged)
+            renderer.domElement.addEventListener('pointerdown', onPointerDown); renderer.domElement.addEventListener('pointermove', onPointerMove); renderer.domElement.addEventListener('pointerup', onPointerUp); window.addEventListener('resize', onWindowResize); solveButton.addEventListener('click', showSolveConfirmation); shuffleButton.addEventListener('click', shuffleCubeAnimated); stopButton.addEventListener('click', requestStopSequence); settingsButton.addEventListener('click', toggleSettingsPanel); closeSettingsButton.addEventListener('click', toggleSettingsPanel); modalCancelButton.addEventListener('click', hideSolveConfirmation); modalConfirmButton.addEventListener('click', () => { hideSolveConfirmation(); solveCubeAnimated(); }); speedSlider.addEventListener('input', handleSpeedChange); themeRadios.forEach(radio => radio.addEventListener('change', handleThemeChange)); vibrationToggle.addEventListener('change', handleVibrationChange);
+            animate();
+        }
+
+        // --- Settings Functions (Unchanged) ---
+        function loadSettings() { const savedSpeed = localStorage.getItem('rubiksAnimationSpeed'); MOVE_DURATION = savedSpeed ? parseInt(savedSpeed, 10) : 200; speedSlider.value = MOVE_DURATION; speedDisplay.textContent = `${MOVE_DURATION}ms`; const savedTheme = localStorage.getItem('rubiksTheme'); const defaultTheme = 'light'; const currentTheme = savedTheme || defaultTheme; applyTheme(currentTheme); document.querySelector(`input[name="theme"][value="${currentTheme}"]`).checked = true; const savedVibration = localStorage.getItem('rubiksVibrationEnabled'); vibrationEnabled = (savedVibration === null) ? true : (savedVibration === 'true'); vibrationToggle.checked = vibrationEnabled; }
+        function handleSpeedChange(event) { MOVE_DURATION = parseInt(event.target.value, 10); speedDisplay.textContent = `${MOVE_DURATION}ms`; localStorage.setItem('rubiksAnimationSpeed', MOVE_DURATION); }
+        function handleThemeChange(event) { const newTheme = event.target.value; applyTheme(newTheme); localStorage.setItem('rubiksTheme', newTheme); }
+        function applyTheme(themeName) { if (themeName === 'dark') document.body.classList.add('dark-theme'); else document.body.classList.remove('dark-theme'); }
+        function toggleSettingsPanel() { settingsPanel.classList.toggle('active'); }
+        function handleVibrationChange(event) { vibrationEnabled = event.target.checked; localStorage.setItem('rubiksVibrationEnabled', vibrationEnabled); if (vibrationEnabled) vibrate(VIBRATION_DURATION / 2); }
+
+        // --- Vibration Function (Unchanged) ---
+        function vibrate(duration) { if (vibrationEnabled && navigator.vibrate) { try { navigator.vibrate(duration); } catch (e) { console.warn("Vibration failed:", e); } } }
+
+        // --- Create Cube (Unchanged) ---
+        function createCube() { if (cubeGroup) scene.remove(cubeGroup); cubeGroup = new THREE.Group(); cubies = []; const offset = (N - 1) / 2; const geom = new THREE.BoxGeometry(CUBE_SIZE, CUBE_SIZE, CUBE_SIZE); for (let x=0;x<N;x++) for(let y=0;y<N;y++) for(let z=0;z<N;z++) { if (x>0&&x<N-1&&y>0&&y<N-1&&z>0&&z<N-1) continue; const mats=[ new THREE.MeshStandardMaterial({color:x===N-1?COLORS.orange:COLORS.black}), new THREE.MeshStandardMaterial({color:x===0?COLORS.red:COLORS.black}), new THREE.MeshStandardMaterial({color:y===N-1?COLORS.yellow:COLORS.black}), new THREE.MeshStandardMaterial({color:y===0?COLORS.white:COLORS.black}), new THREE.MeshStandardMaterial({color:z===N-1?COLORS.blue:COLORS.black}), new THREE.MeshStandardMaterial({color:z===0?COLORS.green:COLORS.black}) ]; const c = new THREE.Mesh(geom, mats); c.position.set((x-offset)*(CUBE_SIZE+SPACING),(y-offset)*(CUBE_SIZE+SPACING),(z-offset)*(CUBE_SIZE+SPACING)); c.userData.logicalPosition=new THREE.Vector3(x,y,z); cubeGroup.add(c); cubies.push(c); } scene.add(cubeGroup); }
+
+        // --- Event Handlers (PointerDown/Up modified for controls, rest unchanged) ---
+        function getIntersect(event){ const b=renderer.domElement.getBoundingClientRect(); mouse.x=((event.clientX-b.left)/b.width)*2-1; mouse.y=-((event.clientY-b.top)/b.height)*2+1; raycaster.setFromCamera(mouse,camera); const i=raycaster.intersectObjects(cubies); if(i.length>0){ const int=i[0]; const f=int.face.materialIndex; if(int.object.material[f].color.getHex()!==COLORS.black) return int; } return null; }
+        function onPointerDown(event){ if(isAnimating||isSequenceAnimating)return; const i=getIntersect(event); if(i){ isDragging=true; controls.enabled=false; /* Disable controls ONLY for drag */ intersectedObject=i.object; startPoint=i.point.clone(); dragNormal=i.face.normal.clone(); dragNormal.transformDirection(intersectedObject.matrixWorld).round(); }else{ isDragging=false; /* controls already enabled */ } }
+        function onPointerMove(event){}
+        function onPointerUp(event){ if(!isDragging||!startPoint||isAnimating||isSequenceAnimating){ if(isDragging) controls.enabled = true; /* Ensure enabled if drag aborted */ isDragging=false; return; } isDragging=false; const b=renderer.domElement.getBoundingClientRect(); const eM=new THREE.Vector2(((event.clientX-b.left)/b.width)*2-1,-((event.clientY-b.top)/b.height)*2+1); const sS=startPoint.clone().project(camera); const dV=eM.clone().sub(sS); if(dV.length()<0.05){ controls.enabled = true; /* No turn, re-enable controls */ resetDragState(); return; } const r=determineRotation(dragNormal,dV); if(r){ rotateLayer(r.axis,r.layer,r.angle) .then(()=>{ controls.enabled = true; /* Re-enable AFTER turn anim */ }) .catch(()=>{ controls.enabled = true; /* Also re-enable on error */ }); } else { controls.enabled = true; /* No rotation, re-enable controls */ } resetDragState(); }
+        function resetDragState(){ intersectedObject=null; startPoint=null; dragNormal=null; isDragging=false; }
+        function onWindowResize(){ const c=document.getElementById('cube-container'); if(!c) return; camera.aspect=c.clientWidth/c.clientHeight; camera.updateProjectionMatrix(); renderer.setSize(c.clientWidth,c.clientHeight); }
+
+        // --- Rotation Logic (rotateLayer modified with vibrate, determineRotation unchanged) ---
+        function determineRotation(faceNormal, dragVectorScreen){ const camDir=new THREE.Vector3(); camera.getWorldDirection(camDir); const rAxis=new THREE.Vector3().crossVectors(camera.up, faceNormal).normalize(); const uAxis=new THREE.Vector3().crossVectors(faceNormal, rAxis).normalize(); const oScreen=startPoint.clone().project(camera); const rPtW=startPoint.clone().add(rAxis); const uPtW=startPoint.clone().add(uAxis); const rPtS=rPtW.project(camera); const uPtS=uPtW.project(camera); const rScreen=new THREE.Vector2().subVectors(rPtS, oScreen).normalize(); const uScreen=new THREE.Vector2().subVectors(uPtS, oScreen).normalize(); const dotR=dragVectorScreen.dot(rScreen); const dotU=dragVectorScreen.dot(uScreen); let rotAxis=new THREE.Vector3(); let sign=1; if(Math.abs(dotR)>Math.abs(dotU)){ rotAxis.copy(uAxis); sign=Math.sign(dotR); }else{ rotAxis.copy(rAxis); sign=-Math.sign(dotU); } let maxC=Math.max(Math.abs(rotAxis.x),Math.abs(rotAxis.y),Math.abs(rotAxis.z)); rotAxis.x=(Math.abs(rotAxis.x)/maxC>0.5)?Math.sign(rotAxis.x):0; rotAxis.y=(Math.abs(rotAxis.y)/maxC>0.5)?Math.sign(rotAxis.y):0; rotAxis.z=(Math.abs(rotAxis.z)/maxC>0.5)?Math.sign(rotAxis.z):0; if(rotAxis.lengthSq()<0.5) return null; const angle=sign*Math.PI/2; const pos=intersectedObject.userData.logicalPosition; let layer=0; if(Math.abs(rotAxis.x)>0.5) layer=pos.x; else if(Math.abs(rotAxis.y)>0.5) layer=pos.y; else if(Math.abs(rotAxis.z)>0.5) layer=pos.z; return { axis:rotAxis, layer:layer, angle:angle }; }
+        function rotateLayer(axis, layerIndex, angle){ return new Promise((resolve, reject)=>{ if(isAnimating){ reject("Animation in progress"); return; } isAnimating=true; /* controls.enabled = false; */ /* <<< CONTROLS NOT DISABLED HERE */ const p=new THREE.Group(); scene.add(p); const lC=[]; const rM=new THREE.Matrix4().makeRotationAxis(axis, angle); cubies.forEach(c=>{ const pos=c.userData.logicalPosition; let b=false; if(Math.abs(axis.x)>0.5&&pos.x===layerIndex)b=true; else if(Math.abs(axis.y)>0.5&&pos.y===layerIndex)b=true; else if(Math.abs(axis.z)>0.5&&pos.z===layerIndex)b=true; if(b){ p.attach(c); lC.push(c); } }); if(lC.length===0){ isAnimating=false; scene.remove(p); resolve(); return; } const sQ=p.quaternion.clone(); const eQ=new THREE.Quaternion().setFromAxisAngle(axis,angle).multiply(sQ); const sT=performance.now(); function anim(){ const el=performance.now()-sT; const fr=Math.min(el/MOVE_DURATION, 1); const ea=fr*fr*(3-2*fr); p.quaternion.slerpQuaternions(sQ,eQ,ea); if(fr<1){ requestAnimationFrame(anim); } else { p.quaternion.copy(eQ); lC.forEach(c=>{ cubeGroup.attach(c); const lp=c.userData.logicalPosition.clone(); const o=(N-1)/2; lp.subScalar(o); lp.applyMatrix4(rM); lp.round(); lp.addScalar(o); c.userData.logicalPosition.copy(lp); }); scene.remove(p); isAnimating=false; vibrate(VIBRATION_DURATION); /* VIBRATE ON COMPLETION */ resolve(); } } anim(); }); }
+
+        // --- Control Functions ---
+        // applyMovesAnimated (Modified - no longer manages controls enable/disable)
+        async function applyMovesAnimated(moves, shouldCleanup = true) { if (isSequenceAnimating) return; isSequenceAnimating = true; stopSequenceRequested = false; setButtonsEnabled(false); /* controls.enabled = false; <<< REMOVED */ if(settingsPanel.classList.contains('active')) toggleSettingsPanel(); const startedByShuffle = shuffleButton.style.display === 'none'; try { for (const move of moves) { if (stopSequenceRequested) { console.log("Animation sequence stopped by user."); break; } await rotateLayer(move.axis, move.layerIndex, move.angle); } } catch (error) { console.error("Error during move sequence:", error); } finally { if (shouldCleanup) { isSequenceAnimating = false; stopSequenceRequested = false; setButtonsEnabled(true); /* controls.enabled = true; <<< REMOVED */ if (startedByShuffle) { shuffleButton.style.display = 'inline-block'; stopButton.style.display = 'none'; } console.log("Move sequence finished or stopped."); } } }
+        function setButtonsEnabled(enabled) { solveButton.disabled = !enabled; shuffleButton.disabled = !enabled; settingsButton.disabled = !enabled; }
+        function showSolveConfirmation() { if (isSequenceAnimating || isAnimating) return; solveModal.classList.add('active'); }
+        function hideSolveConfirmation() { solveModal.classList.remove('active'); }
+        function requestStopSequence() { if (isSequenceAnimating) { stopSequenceRequested = true; stopButton.disabled = true; console.log("Stop requested..."); } }
+        // solveCubeAnimated (Plays animation AND calls createCube() at end - Unchanged)
+        async function solveCubeAnimated() { if (isAnimating || isSequenceAnimating) return; console.log("Solving Cube Animated (with Reset)..."); const solveMoves = []; const axes = [new THREE.Vector3(1,0,0), new THREE.Vector3(0,1,0), new THREE.Vector3(0,0,1)]; const angles = [Math.PI/2, -Math.PI/2]; for(const axis of axes) { solveMoves.push({ axis: axis, layerIndex: 0, angle: angles[0] }); solveMoves.push({ axis: axis, layerIndex: N-1, angle: angles[1] }); } for(let i=0; i<6; i++){ solveMoves.push({ axis: axes[i%3], layerIndex: Math.random()<0.5?0:N-1, angle: angles[Math.floor(Math.random()*2)] }); } await applyMovesAnimated(solveMoves, true); createCube(); /* Guarantees solved state */ console.log("Solve animation finished and cube reset."); }
+        // shuffleCubeAnimated (unchanged)
+        function shuffleCubeAnimated() { if (isAnimating || isSequenceAnimating) return; console.log("Shuffling Cube Animated..."); shuffleButton.style.display = 'none'; stopButton.style.display = 'inline-block'; stopButton.disabled = false; const moves = []; const axes = [new THREE.Vector3(1,0,0), new THREE.Vector3(0,1,0), new THREE.Vector3(0,0,1)]; const angles = [Math.PI/2, -Math.PI/2]; let lastAxis = null; for (let i = 0; i < SHUFFLE_MOVES; i++) { let axis; do { axis = axes[Math.floor(Math.random() * axes.length)]; } while(axis === lastAxis); const layerIndex = Math.floor(Math.random() * N); const angle = angles[Math.floor(Math.random() * angles.length)]; moves.push({ axis, layerIndex, angle }); lastAxis = axis; } applyMovesAnimated(moves, true); }
+
+        // --- Animation Loop (controls.update() always runs) ---
+        function animate() { requestAnimationFrame(animate); controls.update(); renderer.render(scene, camera); }
+
+        // --- Start ---
+        init();
+
+    </script>
+
+</body>
+</html>
