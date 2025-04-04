@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="An interactive 3D Rubik's Cube simulator. Scramble, solve, and interact with the cube directly in your browser. Customize animation speed and theme. Earn Rubix Coins and unlock new cubes!">
+    <meta name="keywords" content="Rubik's Cube, 3D Cube, 2x2 Cube, 4x4 Cube, Interactive Cube, Puzzle, Simulator, Solver, WebGL, Three.js, Rubix Coins, Store">
+    <title>Rubix - Interactive 3D Rubik's Cube Simulator</title>
+
+    <!-- Favicon (Optional but recommended) -->
+    <!-- <link rel="icon" href="favicon.ico" type="image/x-icon"> -->
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Link to CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Username Entry Modal - Displayed initially if no username is found -->
+    <div id="username-modal" class="modal-overlay initial-modal" role="dialog" aria-modal="true" aria-labelledby="username-modal-title">
+        <div class="modal-content">
+            <h3 id="username-modal-title">Welcome to Rubix!</h3>
+            <p>Please enter a username to save your progress and coins.</p>
+            <input type="text" id="username-input" placeholder="Enter username (max 16 chars)" maxlength="16" aria-label="Username Input">
+            <p id="username-error" class="error-message" style="display: none;"></p> <!-- For bad words/validation errors -->
+            <div class="modal-buttons">
+                <button id="save-username-button">Save and Play</button>
+            </div>
+        </div>
+    </div>
+
+    <header id="header">
+        <div id="controls">
+             <!-- Left Side Controls -->
+            <button id="solve-button" title="Solve Cube" aria-label="Solve Cube">
+                <i class="fa-solid fa-lightbulb"></i> Solve
+            </button>
+            <button id="shuffle-button" title="Shuffle Cube" aria-label="Shuffle Cube">
+                <i class="fa-solid fa-shuffle"></i> Shuffle
+            </button>
+             <button id="stop-button" title="Stop Animation" aria-label="Stop Animation" style="display: none;">
+                <i class="fa-solid fa-stop"></i> Stop
+            </button>
+
+            <!-- Logo Area -->
+            <div id="logo-area">
+                <i class="fa-solid fa-cube logo-icon"></i>
+                <span class="logo-text">Rubix</span>
+            </div>
+
+             <!-- Right Side Controls -->
+             <div id="user-info" style="display: none;"> <!-- Initially hidden -->
+                 <span id="username-display" title="Username"></span>
+                 <span id="coin-balance" title="Rubix Coins">
+                     <i class="fa-solid fa-coins"></i> <span id="coin-amount">0</span>
+                 </span>
+                 <span id="current-cube-display" title="Current Cube Size">(3x3)</span> <!-- Placeholder for current cube -->
+             </div>
+             <button id="store-button" title="Store" aria-label="Store">
+                <i class="fa-solid fa-store"></i> Store
+            </button>
+            <button id="settings-button" title="Settings" aria-label="Settings">
+                <i class="fa-solid fa-gear"></i> Settings
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div id="cube-container" role="application" aria-label="Interactive 3D Rubik's Cube">
+            <!-- THREE.js canvas will be inserted here -->
+        </div>
+
+        <div id="description">
+            <p>Welcome to <strong>Rubix</strong>! <span id="welcome-username"></span><br>
+               Click/drag faces to rotate manually. Use Shuffle/Solve, or earn <i class="fa-solid fa-coins"></i> 100 Coins by shuffling & solving manually!
+               Visit the Store to unlock new cube sizes.
+            </p>
+        </div>
+    </main>
+
+    <!-- Solve Confirmation Modal -->
+    <div id="solve-confirm-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="solve-modal-title" aria-describedby="solve-modal-text">
+        <div class="modal-content">
+            <h3 id="solve-modal-title">Solve Cube?</h3>
+            <p id="solve-modal-text">This will animate the cube back to the solved state by reversing the last shuffle.</p>
+            <div class="modal-buttons">
+                <button id="modal-cancel">Cancel</button>
+                <button id="modal-confirm">Go!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Account Confirmation Modal -->
+    <div id="delete-confirm-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title" aria-describedby="delete-modal-text">
+        <div class="modal-content">
+            <h3 id="delete-modal-title" class="warning-title">Delete Account?</h3>
+            <p id="delete-modal-text">Are you sure you want to delete your account? All your progress, coins, and purchased cubes will be permanently lost.</p>
+            <div class="modal-buttons">
+                <button id="delete-modal-cancel">Cancel</button>
+                <button id="delete-modal-confirm" class="danger-button">Yes, Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Panel -->
+    <aside id="settings-panel" class="side-panel" aria-label="Settings Panel">
+        <button id="close-settings-button" class="close-panel-button" title="Close Settings" aria-label="Close Settings">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <h2><i class="fa-solid fa-sliders"></i> Settings</h2>
+        <div class="settings-section">
+            <label for="animation-speed-slider">Animation Speed: <span id="speed-value-display">200ms</span></label>
+            <input type="range" id="animation-speed-slider" min="50" max="1000" step="10" value="200">
+        </div>
+        <div class="settings-section">
+            <label>Theme</label>
+            <div class="theme-options">
+                <label>
+                    <input type="radio" name="theme" value="light" checked> <i class="fa-solid fa-sun"></i> Light
+                </label>
+                <label>
+                    <input type="radio" name="theme" value="dark"> <i class="fa-solid fa-moon"></i> Dark
+                </label>
+            </div>
+        </div>
+        <div class="settings-section toggle-switch">
+            <label for="vibration-toggle">Vibration Feedback</label>
+            <label class="switch" aria-label="Vibration Feedback Toggle">
+                <input type="checkbox" id="vibration-toggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+         <div class="settings-section danger-zone">
+            <label>Account</label>
+            <button id="delete-account-button" class="danger-button">
+                <i class="fa-solid fa-trash-can"></i> Delete Account
+            </button>
+            <p class="danger-zone-text">Permanently delete all your data.</p>
+        </div>
+        <p class="settings-footer">Made by Yousef Elgarhy • Ali Mahmoud</p>
+    </aside>
+
+    <!-- Store Panel -->
+    <aside id="store-panel" class="side-panel" aria-label="Store Panel">
+        <button id="close-store-button" class="close-panel-button" title="Close Store" aria-label="Close Store">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <h2><i class="fa-solid fa-store"></i> Store</h2>
+        <div class="store-section">
+            <h3>Cube Sizes</h3>
+            <!-- 3x3 Cube (Default) -->
+            <div class="store-item">
+                <div class="item-info">
+                    <i class="fa-solid fa-cube item-icon"></i>
+                    <span class="item-name">3x3 Cube</span>
+                </div>
+                <div class="item-actions">
+                    <span class="item-status owned">(Default)</span>
+                    <button class="use-button" data-cube-size="3" disabled>Selected</button> <!-- Initially selected -->
+                </div>
+            </div>
+            <!-- 2x2 Cube -->
+            <div class="store-item" data-item-id="cube_2x2">
+                <div class="item-info">
+                    <i class="fa-solid fa-dice-two item-icon"></i> <!-- Example icon -->
+                    <span class="item-name">2x2 Cube</span>
+                     <span class="item-price"><i class="fa-solid fa-coins"></i> 100</span> <!-- CHANGED PRICE -->
+                </div>
+                <div class="item-actions">
+                    <button class="buy-button" data-item-id="cube_2x2" data-price="100">Buy</button> <!-- CHANGED DATA-PRICE -->
+                    <button class="use-button" data-cube-size="2" style="display: none;">Use</button> <!-- Hidden until bought -->
+                    <span class="item-status owned" style="display: none;">(Owned)</span>
+                </div>
+            </div>
+            <!-- 4x4 Cube -->
+             <div class="store-item" data-item-id="cube_4x4">
+                <div class="item-info">
+                     <i class="fa-solid fa-dice-four item-icon"></i> <!-- Example icon -->
+                    <span class="item-name">4x4 Cube</span>
+                    <span class="item-price"><i class="fa-solid fa-coins"></i> 300</span> <!-- CHANGED PRICE -->
+                </div>
+                <div class="item-actions">
+                     <button class="buy-button" data-item-id="cube_4x4" data-price="300">Buy</button> <!-- CHANGED DATA-PRICE -->
+                     <button class="use-button" data-cube-size="4" style="display: none;">Use</button> <!-- Hidden until bought -->
+                     <span class="item-status owned" style="display: none;">(Owned)</span>
+                </div>
+            </div>
+        </div>
+         <p class="store-footer">Earn coins by shuffling and then manually solving the cube!</p>
+    </aside>
+
+
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <!-- Link to JavaScript (defer ensures HTML is parsed first) -->
+    <script src="script.js" defer></script>
+</body>
+</html>
